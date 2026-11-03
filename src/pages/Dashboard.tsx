@@ -16,34 +16,46 @@ export function Dashboard({ library }: { library: Library }) {
   const summary = useMemo(() => summarize(library.books, library.events), [library])
 
   const stats: Stat[] = [
-    { label: 'Books', value: formatNumber(summary.books) },
+    { label: 'Books', icon: 'book', value: formatNumber(summary.books) },
     {
       label: 'Read books (more than 95%)',
+      icon: 'book-check',
       value: formatNumber(summary.finishedBooks),
       detail: `${formatPercent(summary.books ? summary.finishedBooks / summary.books : 0)} of books`,
     },
     {
       label: 'Total reading time',
+      icon: 'clock',
       value: formatDuration(summary.totalTime),
       detail: summary.firstRead ? `since ${formatDate(summary.firstRead)}` : undefined,
     },
-    { label: 'Pages read', value: formatNumber(summary.readPages) },
+    { label: 'Pages read', icon: 'pages', value: formatNumber(summary.readPages) },
     {
       label: 'Reading days',
+      icon: 'calendar',
       value: formatNumber(summary.readingDays),
       detail: summary.lastRead ? `last on ${formatDate(summary.lastRead)}` : undefined,
     },
-    { label: 'Average per reading day', value: formatDuration(summary.avgPerReadingDay) },
-    { label: 'Average time per page', value: formatDuration(summary.avgPerPage) },
+    {
+      label: 'Average per reading day',
+      icon: 'gauge',
+      value: formatDuration(summary.avgPerReadingDay),
+    },
+    {
+      label: 'Average time per page',
+      icon: 'stopwatch',
+      value: formatDuration(summary.avgPerPage),
+    },
     {
       label: 'Most reading in a day',
+      icon: 'trophy',
       value: summary.bestDay ? formatDuration(summary.bestDay.seconds) : '—',
       detail: summary.bestDay ? formatDate(summary.bestDay.date) : undefined,
     },
-    { label: 'Longest streak', value: days(summary.longestStreak) },
-    { label: 'Current streak', value: days(summary.currentStreak) },
-    { label: 'Highlights', value: formatNumber(summary.highlights) },
-    { label: 'Notes', value: formatNumber(summary.notes) },
+    { label: 'Longest streak', icon: 'flame', value: days(summary.longestStreak) },
+    { label: 'Current streak', icon: 'bolt', value: days(summary.currentStreak) },
+    { label: 'Highlights', icon: 'highlighter', value: formatNumber(summary.highlights) },
+    { label: 'Notes', icon: 'note', value: formatNumber(summary.notes) },
   ]
 
   return (

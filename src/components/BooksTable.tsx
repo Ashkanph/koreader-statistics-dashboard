@@ -200,7 +200,7 @@ export function BooksTable({ books }: { books: Book[] }) {
                 <th
                   key={column.key}
                   scope="col"
-                  className={column.numeric ? 'num' : undefined}
+                  className={column.numeric && column.key !== 'progress' ? 'num' : undefined}
                   aria-sort={column.key === sortKey ? direction : undefined}
                 >
                   <button type="button" className="sort-button" onClick={() => sortBy(column)}>

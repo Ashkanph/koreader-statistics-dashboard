@@ -45,15 +45,7 @@ const BOOKS = [
   ['Hyperion', 'Dan Simmons', 'Hyperion Cantos #1', 'en', 256, 1, 150],
   // MuPDF used to leave a trailing NUL in PDF metadata; KOReader keeps such rows.
   ['KOReader Quickstart Guide', 'N/A', 'N/A', 'N/A', 40, 1, 90],
-  [
-    "Cat's craddle",
-    'Kurt Vonnegut Jr.',
-    'N/A',
-    'en',
-    220,
-    0.35,
-    60,
-  ],
+  ["Cat's craddle", 'Kurt Vonnegut Jr.', 'N/A', 'en', 220, 0.35, 60],
   // Read up to today, so the current streak is non-zero.
   ['A short stay in hell', 'Steven L. Peck', 'N/A', 'en', 105, 0.55, 25],
 ]

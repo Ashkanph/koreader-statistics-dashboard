@@ -175,7 +175,34 @@ try {
   // 3. Interactions: theme switch, sorting, chart keyboard access, book routing.
   {
     const { page, context } = await open(VIEWPORTS.desktop, 'light')
+    const spriteRequests = []
+    page.on('request', (r) => r.url().includes('stat-icons') && spriteRequests.push(r.url()))
     await loadFile(page, join(fixtures, 'statistics.sqlite3'))
+
+    // Stat tile icons: every tile has one, each points at a symbol that exists in the sprite,
+    // and the sprite is a single request shared by all icons.
+    const hrefs = await page
+      .locator('.stat-tile')
+      .evaluateAll((tiles) =>
+        tiles.map((t) => t.querySelector('.stat-icon use')?.getAttribute('href') ?? null),
+      )
+    check(
+      'every stat tile has an icon',
+      hrefs.length > 0 && hrefs.every(Boolean),
+      `${hrefs.length} tiles`,
+    )
+    const spriteUrl = hrefs[0]?.split('#')[0]
+    const sprite = spriteUrl
+      ? await (await page.request.get(new URL(spriteUrl, url).href)).text()
+      : ''
+    const missing = hrefs.filter((h) => h && !sprite.includes(`id="${h.split('#')[1]}"`))
+    check('every icon exists in the sprite', missing.length === 0, missing.join(', '))
+    await page.waitForLoadState('networkidle')
+    check(
+      'icon sprite is fetched once',
+      spriteRequests.length === 1,
+      `${spriteRequests.length} requests`,
+    )
 
     await page.getByLabel('Dark').check({ force: true })
     check(

@@ -52,33 +52,53 @@ function BookDetails({ library, book }: { library: Library; book: Book }) {
   const stats: Stat[] = [
     {
       label: 'Progress',
+      icon: 'progress',
       value: formatPercent(book.progress),
       detail: <ProgressBar value={book.progress} />,
     },
     {
       label: 'Pages read',
+      icon: 'pages',
       value: formatNumber(book.readPages),
       detail: `of ${formatNumber(book.pages)} pages`,
     },
-    { label: 'Total reading time', value: formatDuration(book.totalTime) },
+    { label: 'Total reading time', icon: 'clock', value: formatDuration(book.totalTime) },
     {
       label: 'Estimated time left',
+      icon: 'hourglass',
       value: book.finished ? 'Finished' : perPage ? formatDuration(pagesLeft * perPage) : '—',
       detail: book.finished ? undefined : `${formatNumber(pagesLeft)} pages to go`,
     },
-    { label: 'Reading days', value: formatNumber(book.readingDays) },
-    { label: 'Average per reading day', value: formatDuration(summary.avgPerReadingDay) },
-    { label: 'Average time per page', value: perPage ? formatDuration(perPage) : '—' },
+    { label: 'Reading days', icon: 'calendar', value: formatNumber(book.readingDays) },
+    {
+      label: 'Average per reading day',
+      icon: 'gauge',
+      value: formatDuration(summary.avgPerReadingDay),
+    },
+    {
+      label: 'Average time per page',
+      icon: 'stopwatch',
+      value: perPage ? formatDuration(perPage) : '—',
+    },
     {
       label: 'Most reading in a day',
+      icon: 'trophy',
       value: summary.bestDay ? formatDuration(summary.bestDay.seconds) : '—',
       detail: summary.bestDay ? formatDate(summary.bestDay.date) : undefined,
     },
-    { label: 'Longest streak', value: days(summary.longestStreak) },
-    { label: 'First read', value: book.firstRead ? formatDate(book.firstRead) : '—' },
-    { label: 'Last read', value: book.lastRead ? formatDate(book.lastRead) : '—' },
-    { label: 'Highlights', value: book.highlights === null ? '—' : formatNumber(book.highlights) },
-    { label: 'Notes', value: book.notes === null ? '—' : formatNumber(book.notes) },
+    { label: 'Longest streak', icon: 'flame', value: days(summary.longestStreak) },
+    { label: 'First read', icon: 'flag', value: book.firstRead ? formatDate(book.firstRead) : '—' },
+    {
+      label: 'Last read',
+      icon: 'bookmark',
+      value: book.lastRead ? formatDate(book.lastRead) : '—',
+    },
+    {
+      label: 'Highlights',
+      icon: 'highlighter',
+      value: book.highlights === null ? '—' : formatNumber(book.highlights),
+    },
+    { label: 'Notes', icon: 'note', value: book.notes === null ? '—' : formatNumber(book.notes) },
   ]
 
   const details: [string, string | null][] = [
