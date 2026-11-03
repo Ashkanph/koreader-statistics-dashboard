@@ -1,4 +1,5 @@
 import { useId, useRef, useState, type DragEvent } from 'react'
+import { AppLogo } from './AppLogo.tsx'
 
 interface Props {
   onFile: (file: File) => void
@@ -21,9 +22,18 @@ export function FileDrop({ onFile, loading, error }: Props) {
 
   return (
     <section className="file-drop-wrapper" aria-labelledby="file-drop-title">
-      <h1 id="file-drop-title">KOReader reading statistics</h1>
+      <AppLogo size={72} className="hero-logo" />
+      <h1 id="file-drop-title">KOReader Statistics Dashboard</h1>
       <p className="lead">
-        See your reading habits from KOReader's statistics database, right in your browser.
+        See your reading habits from{' '}
+        <a
+          href="https://github.com/koreader/koreader/"
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+        >
+          KOReader<span className="visually-hidden"> (opens in a new tab)</span>
+        </a>
+        's statistics database, right in your browser.
       </p>
 
       <div

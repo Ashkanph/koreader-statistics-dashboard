@@ -214,9 +214,17 @@ h1:focus {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 650;
   color: var(--text);
   text-decoration: none;
+}
+
+.brand-logo {
+  flex: none;
+  border-radius: 5px;
 }
 
 .app-header-actions {
@@ -402,6 +410,21 @@ h1 .badge {
   max-width: 40rem;
   margin: clamp(0rem, 6vh, 4rem) auto 0;
   text-align: center;
+}
+
+.hero-logo {
+  justify-self: center;
+  /* Tighter to the h1 than the wrapper's 1.25rem gap, so the logo reads as part of the title. */
+  margin-bottom: -0.5rem;
+  width: 120px;
+  height: 120px;
+}
+
+@media (max-width: 500px) {
+  .hero-logo {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 .lead {

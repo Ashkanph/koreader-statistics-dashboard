@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AppLogo } from './components/AppLogo.tsx'
 import { FileDrop } from './components/FileDrop.tsx'
 import { ThemeSwitcher } from './components/ThemeSwitcher.tsx'
 import { DatabaseError, loadLibrary } from './lib/db.ts'
@@ -45,10 +46,14 @@ function App() {
         <div className="app-header-inner">
           {library ? (
             <a href={dashboardHref} className="brand">
+              <AppLogo size={24} className="brand-logo" />
               Reading statistics
             </a>
           ) : (
-            <span className="brand">Reading statistics</span>
+            <span className="brand">
+              <AppLogo size={24} className="brand-logo" />
+              Reading statistics
+            </span>
           )}
           <div className="app-header-actions">
             {library && (
