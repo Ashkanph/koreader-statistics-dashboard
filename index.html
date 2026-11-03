@@ -4,7 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>my-app</title>
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Explore your KOReader reading statistics in the browser. Your data never leaves your device."
+    />
+    <title>KOReader reading statistics</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash (see src/lib/theme.ts).
+      try {
+        var theme = localStorage.getItem('theme')
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
