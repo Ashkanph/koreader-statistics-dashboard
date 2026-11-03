@@ -131,3 +131,61 @@ export function byWeekday(events: ReadingEvent[]): number[] {
   for (const e of events) days[(new Date(e.start * 1000).getDay() + 6) % 7] += e.duration
   return days
 }
+
+export interface ProgressPoint {
+  /** Calendar days since the book was first opened: 0 = before reading, 1 = end of the first day. */
+  day: number
+  /** 0..100 */
+  progress: number
+}
+
+export interface ProgressCurve {
+  bookId: number
+  title: string
+  points: ProgressPoint[]
+  /** Days until the last new page was read. */
+  daysToFinish: number
+  /** Day on which the book first reached 50% (null if it never did). */
+  daysToHalf: number | null
+  finalProgress: number
+}
+
+/**
+ * Progress over time for each finished book: cumulative distinct pages read at the end of each
+ * reading day. A curve ends on the day its last new page was read, so later re-reading doesn't
+ * stretch it.
+ */
+export function progressCurves(books: Book[], firstReads: Map<number, number[]>): ProgressCurve[] {
+  const curves: ProgressCurve[] = []
+  for (const book of books) {
+    const times = firstReads.get(book.id)
+    if (!book.finished || !times?.length || book.pages <= 0) continue
+    const start = startOfDay(new Date(times[0] * 1000))
+    const points: ProgressPoint[] = [{ day: 0, progress: 0 }]
+    let read = 0
+    for (const ts of times) {
+      read++
+      const day = daysBetween(start, new Date(ts * 1000)) + 1
+      const progress = Math.min((read / book.pages) * 100, 100)
+      const last = points[points.length - 1]
+      if (last.day === day) {
+        last.progress = progress
+        continue
+      }
+      // Stay flat through days without reading, so breaks show as breaks rather than as a
+      // slow slope: the day before reading resumes still has the previous progress.
+      if (day - 1 > last.day) points.push({ day: day - 1, progress: last.progress })
+      points.push({ day, progress })
+    }
+    const last = points[points.length - 1]
+    curves.push({
+      bookId: book.id,
+      title: book.title,
+      points,
+      daysToFinish: last.day,
+      daysToHalf: points.find((p) => p.progress >= 50)?.day ?? null,
+      finalProgress: last.progress,
+    })
+  }
+  return curves.sort((a, b) => a.daysToFinish - b.daysToFinish || a.title.localeCompare(b.title))
+}

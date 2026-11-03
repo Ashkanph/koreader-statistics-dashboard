@@ -4,7 +4,7 @@ import { ReadingCharts } from '../components/ReadingCharts.tsx'
 import { StatTiles, type Stat } from '../components/StatTiles.tsx'
 import { useFocusOnMount } from '../lib/focus.ts'
 import { formatDate, formatDuration, formatNumber, formatPercent } from '../lib/format.ts'
-import { summarize } from '../lib/stats.ts'
+import { progressCurves, summarize } from '../lib/stats.ts'
 import type { Library } from '../lib/types.ts'
 
 function days(n: number): string {
@@ -14,6 +14,7 @@ function days(n: number): string {
 export function Dashboard({ library }: { library: Library }) {
   const headingRef = useFocusOnMount<HTMLHeadingElement>()
   const summary = useMemo(() => summarize(library.books, library.events), [library])
+  const curves = useMemo(() => progressCurves(library.books, library.firstReads), [library])
 
   const stats: Stat[] = [
     { label: 'Books', icon: 'book', value: formatNumber(summary.books) },
@@ -81,7 +82,7 @@ export function Dashboard({ library }: { library: Library }) {
         </p>
       </section>
 
-      <ReadingCharts events={library.events} idPrefix="all" />
+      <ReadingCharts events={library.events} idPrefix="all" curves={curves} />
 
       <BooksTable books={library.books} />
     </>

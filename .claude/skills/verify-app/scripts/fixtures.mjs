@@ -142,6 +142,14 @@ export async function makeFixtures(dir) {
       )[0].values[0][0],
     ),
     totalSeconds: Number(db.exec('SELECT sum(duration) FROM page_stat')[0].values[0][0]),
+    // Same rule as the app (db.ts): more than 95% of pages read.
+    finishedBooks: Number(
+      db.exec(
+        `SELECT count(*) FROM book JOIN (
+           SELECT id_book, count(DISTINCT page) n FROM page_stat GROUP BY id_book
+         ) s ON s.id_book = book.id WHERE pages > 0 AND 1.0 * n / pages > 0.95`,
+      )[0].values[0][0],
+    ),
   }
   writeFileSync(join(dir, 'statistics.sqlite3'), asWal(db.export()))
   db.close()

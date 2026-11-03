@@ -99,12 +99,18 @@ function readLibrary(db: Database, fileName: string): Library {
     duration: Number(duration),
   }))
 
-  const readPagesByBook = new Map(
-    rows(db, 'SELECT id_book, count(DISTINCT page) FROM page_stat GROUP BY id_book').map((r) => [
-      Number(r[0]),
-      Number(r[1]),
-    ]),
-  )
+  // When each (rescaled) page was first read. Its count per book is the number of distinct
+  // pages read; the timestamps give the progress-over-time curves.
+  const firstReads = new Map<number, number[]>()
+  for (const [bookId, start] of rows(
+    db,
+    'SELECT id_book, min(start_time) FROM page_stat GROUP BY id_book, page ORDER BY 2',
+  )) {
+    const id = Number(bookId)
+    const list = firstReads.get(id)
+    if (list) list.push(Number(start))
+    else firstReads.set(id, [Number(start)])
+  }
 
   const activity = new Map<
     number,
@@ -131,7 +137,7 @@ function readLibrary(db: Database, fileName: string): Library {
     const a = activity.get(id)
     if (!a) continue
     const pages = num(r[5]) ?? 0
-    const readPages = readPagesByBook.get(id) ?? 0
+    const readPages = firstReads.get(id)?.length ?? 0
     const progress = pages > 0 ? Math.min(readPages / pages, 1) : 0
     books.push({
       id,
@@ -160,5 +166,5 @@ function readLibrary(db: Database, fileName: string): Library {
     )
   }
 
-  return { fileName, books, events }
+  return { fileName, books, events, firstReads }
 }

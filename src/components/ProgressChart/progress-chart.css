@@ -1,0 +1,109 @@
+.chart-axis-title {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+.chart-empty {
+  padding: 2rem 0;
+  color: var(--text-secondary);
+}
+
+.progress-line {
+  fill: none;
+  stroke: var(--series);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.7;
+}
+
+.progress-line.is-dimmed {
+  stroke: var(--context-line);
+  stroke-opacity: 1;
+}
+
+.progress-line.is-active {
+  stroke-opacity: 1;
+  stroke-width: 2.5;
+}
+
+.progress-end {
+  fill: var(--series);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.progress-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.progress-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  max-height: 9.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.progress-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  max-width: 22rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: start;
+  cursor: pointer;
+}
+
+.progress-legend button:hover,
+.progress-legend button.is-active {
+  background: var(--hover);
+}
+
+.progress-legend button[aria-pressed='true'] {
+  border-color: var(--series);
+}
+
+.progress-legend button.is-dimmed {
+  color: var(--text-secondary);
+}
+
+.legend-key {
+  flex: none;
+  width: 1rem;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--series);
+}
+
+.is-dimmed .legend-key {
+  background: var(--context-line);
+}
+
+.legend-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-value {
+  flex: none;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { Granularity } from '../lib/dates.ts'
 import { autoGranularity, byHourOfDay, byWeekday, timeSeries } from '../lib/stats.ts'
+import type { ProgressCurve } from '../lib/stats.ts'
 import type { ReadingEvent } from '../lib/types.ts'
 import { BarChart, type BarDatum } from './BarChart.tsx'
+import { ProgressChart } from './ProgressChart/ProgressChart.tsx'
 
 const GRANULARITIES: { value: Granularity; label: string }[] = [
   { value: 'day', label: 'Daily' },
@@ -25,7 +27,14 @@ function hourLabel(hour: number): string {
   return `${String(hour).padStart(2, '0')}:00`
 }
 
-export function ReadingCharts({ events, idPrefix }: { events: ReadingEvent[]; idPrefix: string }) {
+interface Props {
+  events: ReadingEvent[]
+  idPrefix: string
+  /** Progress curves of finished books; when given, the reading pace charts are shown. */
+  curves?: ProgressCurve[]
+}
+
+export function ReadingCharts({ events, idPrefix, curves }: Props) {
   const [granularity, setGranularity] = useState<Granularity>(() => autoGranularity(events))
 
   const series: BarDatum[] = useMemo(
@@ -120,6 +129,37 @@ export function ReadingCharts({ events, idPrefix }: { events: ReadingEvent[]; id
           data={weekdays}
           labelHeader="Weekday"
         />
+        {curves && (
+          <>
+            <div className="chart-wide">
+              <ProgressChart
+                title="Reading pace: progress by day"
+                curves={curves}
+                info={
+                  <>
+                    <p>
+                      Compare how quickly you got through the books you've read more than 95% of.
+                      Each line is one book: it starts on the day you first opened it and rises as
+                      you read pages you hadn't read before.
+                    </p>
+                    <p>
+                      Steeper lines mean you got through a larger share of the book each day; flat
+                      stretches are breaks. Because progress is a percentage, a long and a short
+                      book finished in the same number of days look the same.
+                    </p>
+                    <p>
+                      <strong>About pages:</strong> page counts come from KOReader, not from the
+                      printed book. They depend on the screen size, font, margins and file format,
+                      so the same book can have a different number of pages on another device or
+                      after you change the font.
+                    </p>
+                    <p>Point at or tap a line or a title to highlight that book.</p>
+                  </>
+                }
+              />
+            </div>
+          </>
+        )}
       </div>
     </section>
   )

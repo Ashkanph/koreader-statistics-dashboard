@@ -20,6 +20,7 @@ export type IconName =
   | 'hourglass'
   | 'flag'
   | 'bookmark'
+  | 'help'
 
 /** Decorative icon: always paired with a visible text label, so hidden from assistive tech. */
 export function Icon({ name, className = 'icon' }: { name: IconName; className?: string }) {

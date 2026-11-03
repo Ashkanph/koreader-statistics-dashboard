@@ -35,6 +35,11 @@ export interface Library {
   fileName: string
   /** Books that have at least some reading activity. */
   books: Book[]
+  /**
+   * Per book: the time each distinct page was first read, sorted ascending. Its length is the
+   * book's readPages.
+   */
+  firstReads: Map<number, number[]>
   /** All reading events, sorted by start time. */
   events: ReadingEvent[]
 }

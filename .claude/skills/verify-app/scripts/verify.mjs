@@ -151,6 +151,23 @@ try {
       await noOverflow(page, `${label} dashboard`)
       await shot(page, `dashboard-${name}-${theme}`)
 
+      if (name === 'mobile') {
+        const info = page.locator('.progress-chart .info-tip').first()
+        await info.locator('button').tap()
+        check(
+          `${label}: tapping ? opens the info panel`,
+          await info.locator('.info-tip-panel').isVisible(),
+        )
+        await info.scrollIntoViewIfNeeded()
+        await page.screenshot({ path: join(SHOTS, `info-${name}-${theme}.png`) })
+        screenshots.push(join(SHOTS, `info-${name}-${theme}.png`))
+        await page.locator('h1').tap()
+        check(
+          `${label}: tapping elsewhere closes it`,
+          !(await info.locator('.info-tip-panel').isVisible()),
+        )
+      }
+
       await page.locator('.book-link').first().click()
       await page.waitForSelector('.details-list')
       const focused = await page.evaluate(() => document.activeElement?.tagName)
@@ -229,6 +246,59 @@ try {
     await page.getByRole('searchbox', { name: 'Search books' }).fill('earthsea')
     const filtered = await page.locator('.books-table tbody tr').count()
     check('search filters the table', filtered === 1, `got ${filtered} rows`)
+
+    await page.getByRole('searchbox', { name: 'Search books' }).fill('')
+
+    // Reading pace charts: one line and one legend entry per finished book, linked highlighting.
+    const pace = page.locator('.progress-chart')
+    check('one reading pace chart', (await pace.count()) === 1, `got ${await pace.count()}`)
+    const first = pace.first()
+    const lines = await first.locator('.progress-line').count()
+    check(
+      'pace chart has a line per book above 95%',
+      lines === expected.finishedBooks,
+      `got ${lines}, expected ${expected.finishedBooks}`,
+    )
+    await first.locator('.progress-legend button').first().hover()
+    check(
+      'hovering a legend name highlights its line',
+      (await first.locator('.progress-line.is-active').count()) === 1 &&
+        (await first.locator('.progress-line.is-dimmed').count()) === lines - 1,
+    )
+    await page.mouse.move(0, 0)
+    // Hover the middle of the last line's hit path (the one drawn on top).
+    const hit = first.locator('.progress-hit').last()
+    const pt = await hit.evaluate((el) => {
+      const p = el.getPointAtLength(el.getTotalLength() / 2)
+      const m = el.getScreenCTM()
+      return { x: p.x * m.a + m.e, y: p.y * m.d + m.f }
+    })
+    await page.mouse.move(pt.x, pt.y)
+    const activeLegend = await first.locator('.progress-legend button.is-active').count()
+    check(
+      'hovering a line highlights its legend name',
+      activeLegend === 1,
+      `${activeLegend} active`,
+    )
+    const tip = await first
+      .locator('.chart-tooltip')
+      .textContent()
+      .catch(() => null)
+    check('hovering a line shows a tooltip', Boolean(tip), tip ?? '')
+    await page.mouse.move(0, 0)
+
+    // Info tip: opens on hover, closes on leave, toggles on click, closes on Escape.
+    const infoButton = first.locator('.info-tip-button')
+    const panel = first.locator('.info-tip-panel')
+    await infoButton.hover()
+    check('info panel opens on hover', await panel.isVisible())
+    await page.mouse.move(0, 0)
+    check('info panel closes when the mouse leaves', !(await panel.isVisible()))
+    await infoButton.click()
+    await page.mouse.move(0, 0)
+    check('info panel stays open after a click', await panel.isVisible())
+    await page.keyboard.press('Escape')
+    check('Escape closes the info panel', !(await panel.isVisible()))
 
     await page.goto(`${url}#/book/99999`)
     await page.waitForSelector('h1')
