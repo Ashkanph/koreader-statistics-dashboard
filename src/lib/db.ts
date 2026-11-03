@@ -132,6 +132,7 @@ function readLibrary(db: Database, fileName: string): Library {
     if (!a) continue
     const pages = num(r[5]) ?? 0
     const readPages = readPagesByBook.get(id) ?? 0
+    const progress = pages > 0 ? Math.min(readPages / pages, 1) : 0
     books.push({
       id,
       title: text(r[1]) ?? 'Untitled',
@@ -140,8 +141,8 @@ function readLibrary(db: Database, fileName: string): Library {
       language: text(r[4]),
       pages,
       readPages,
-      progress: pages > 0 ? Math.min(readPages / pages, 1) : 0,
-      finished: pages > 0 && readPages >= pages,
+      progress: progress,
+      finished: pages > 0 && progress > 0.95, // An ideal way: readPages >= pages
       highlights: num(r[6]),
       notes: num(r[7]),
       md5: text(r[8]),

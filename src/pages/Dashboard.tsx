@@ -18,7 +18,7 @@ export function Dashboard({ library }: { library: Library }) {
   const stats: Stat[] = [
     { label: 'Books', value: formatNumber(summary.books) },
     {
-      label: 'Fully read books',
+      label: 'Read books (more than 95%)',
       value: formatNumber(summary.finishedBooks),
       detail: `${formatPercent(summary.books ? summary.finishedBooks / summary.books : 0)} of books`,
     },
@@ -63,8 +63,9 @@ export function Dashboard({ library }: { library: Library }) {
         </h2>
         <StatTiles stats={stats} label="Reading overview" />
         <p className="footnote">
-          A book counts as fully read when every page has reading time recorded. KOReader keeps its
-          own “finished” status in each book's metadata file, which isn't part of this database.
+          In this app, a book counts as fully read when 95% of pages have reading time recorded.
+          KOReader keeps its own “finished” status in each book's metadata file, which isn't part of
+          this database.
         </p>
       </section>
 
