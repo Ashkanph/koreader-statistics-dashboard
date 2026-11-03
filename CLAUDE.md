@@ -23,7 +23,9 @@ A client-only web dashboard for KOReader's reading statistics. The user drops or
 - `npm run format` / `npm run format:check`: Prettier (`.prettierrc.json`: no semicolons, single quotes, trailing commas, width 100)
 - `npm run preview`: serves the built `dist/`
 
-No test framework is configured yet.
+- `npm run verify` (or `npm run verify -- --quick`): builds, then checks the app end to end in headless Chromium and writes screenshots to `.verify/` (see the `verify-app` skill)
+
+There are no unit tests yet. Project skills live in `.claude/skills/`: `verify-app` (end-to-end checks and screenshots) and `koreader-data` (KOReader database schema, quirks and formulas; consult it before changing SQL or adding statistics).
 
 A Husky pre-commit hook (`.husky/pre-commit`) runs `lint-staged`, which applies `eslint --fix` and `prettier --write` to staged files (config is in `package.json`). ESLint extends `eslint-config-prettier`, so formatting is left entirely to Prettier.
 
