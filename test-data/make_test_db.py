@@ -31,7 +31,7 @@ books = [
  ("Cat’s Cradle","Kurt Vonnegut Jr.","N/A","en",306),
  ("Small gods","Terry Pratchett","Discworld #13","en",389),
  ("A Short Stay in Hell","Steven L. Peck","N/A","en",108),
- ("The library at mount CharFinished","Scott Hawkins",None,"en",390),
+ ("The library at mount Char","Scott Hawkins",None,"en",390),
  ("The Zero Stone","Andre Norton","Murdoc Jern #1","en",221),
  ("Red Rising","Pierce Brown","Red Rising Saga #1","en",382),
  ("Die Wand","Marlen Haushofer","N/A","de",285),
