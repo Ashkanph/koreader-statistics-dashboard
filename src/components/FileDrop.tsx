@@ -1,5 +1,36 @@
 import { useId, useRef, useState, type DragEvent } from 'react'
 import { AppLogo } from './AppLogo.tsx'
+import { Icon, type IconName } from './Icon.tsx'
+
+// What the dashboard shows. Also the main indexable text of the site: search engines only ever
+// see this page, since the dashboard needs the visitor's own file.
+const FEATURES: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: 'clock',
+    title: 'Reading time',
+    text: 'Per day, week or month, by hour of the day and by weekday.',
+  },
+  {
+    icon: 'flame',
+    title: 'Habits and streaks',
+    text: 'Reading days, your longest and current streak, and your biggest reading day.',
+  },
+  {
+    icon: 'gauge',
+    title: 'Reading pace',
+    text: 'How quickly you got through each book you finished.',
+  },
+  {
+    icon: 'calendar',
+    title: 'Reading periods',
+    text: 'When you started and last read each book, on one timeline.',
+  },
+  {
+    icon: 'book',
+    title: 'Every book',
+    text: 'Progress, pages, time spent, highlights and notes, with a page for each book.',
+  },
+]
 
 interface Props {
   onFile: (file: File) => void
@@ -110,6 +141,21 @@ export function FileDrop({ onFile, onExample, loading, error }: Props) {
           <strong>The statistics couldn't be loaded.</strong> {error}
         </div>
       )}
+
+      <section className="features" aria-labelledby="features-title">
+        <h2 id="features-title">What you'll see</h2>
+        <ul>
+          {FEATURES.map((f) => (
+            <li key={f.title}>
+              <Icon name={f.icon} className="features-icon" />
+              <div>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
     </section>
   )
 }

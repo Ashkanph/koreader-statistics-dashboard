@@ -264,8 +264,12 @@ try {
   // 3. Interactions: theme switch, sorting, chart keyboard access, book routing.
   {
     const { page, context } = await open(VIEWPORTS.desktop, 'light')
+    // Full downloads only: vite preview sends Cache-Control: no-cache, so a later use of the
+    // sprite (the upload panel has icons too) is a 304 revalidation, which downloads nothing.
     const spriteRequests = []
-    page.on('request', (r) => r.url().includes('stat-icons') && spriteRequests.push(r.url()))
+    page.on('response', (r) => {
+      if (r.url().includes('stat-icons') && r.status() === 200) spriteRequests.push(r.url())
+    })
     await loadFile(page, join(fixtures, 'statistics.sqlite3'))
 
     // Stat tile icons: every tile has one, each points at a symbol that exists in the sprite,
@@ -288,9 +292,9 @@ try {
     check('every icon exists in the sprite', missing.length === 0, missing.join(', '))
     await page.waitForLoadState('networkidle')
     check(
-      'icon sprite is fetched once',
+      'icon sprite is downloaded once',
       spriteRequests.length === 1,
-      `${spriteRequests.length} requests`,
+      `${spriteRequests.length} downloads`,
     )
 
     await page.getByLabel('Dark').check({ force: true })
