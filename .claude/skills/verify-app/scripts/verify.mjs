@@ -10,6 +10,7 @@ import { basename, join, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
 import { chromium } from 'playwright'
 import { preview } from 'vite'
+import { browserSupportProblems } from './browser-support.mjs'
 import { makeFixtures } from './fixtures.mjs'
 
 const { values: args } = parseArgs({
@@ -140,6 +141,51 @@ try {
       'example data: no console errors or off-origin requests',
       problems.errors.length === 0 && problems.foreignRequests.length === 0,
       [...problems.errors, ...problems.foreignRequests].join(' | '),
+    )
+    await context.close()
+  }
+
+  // 1c. Browsers from 2020: no unsupported syntax/selectors in dist/, and the app works without
+  // the APIs those browsers lack. WebAssembly.validate() returning false (as for Safari < 15,
+  // which can't run sql.js's WebAssembly build) makes db.ts fall back to the asm.js build.
+  // BigInt64Array itself can't be removed: Playwright's evaluate() needs it. .no-flex-gap
+  // forces the margin fallback for flex gap.
+  {
+    const problems = browserSupportProblems(join(ROOT, 'dist'))
+    check(
+      'dist/ uses nothing newer than the 2020 targets',
+      problems.length === 0,
+      problems.join(' | '),
+    )
+
+    const { page, context, problems: runtime } = await open(VIEWPORTS.mobile, 'light')
+    await context.addInitScript(() => {
+      WebAssembly.validate = () => false
+      delete Blob.prototype.arrayBuffer
+    })
+    const sqlBuilds = []
+    page.on('request', (r) => {
+      const name = r.url().split('/').pop()
+      if (name.startsWith('sql-')) sqlBuilds.push(name.replace(/-[\w-]{8}\./, '.'))
+    })
+    await page.reload()
+    await page.evaluate(() => document.documentElement.classList.add('no-flex-gap'))
+    await loadFile(page, join(fixtures, 'statistics.sqlite3'))
+    const books = await tile(page, 'Books')
+      .textContent()
+      .catch(() => null)
+    check(
+      'legacy browser: loads with the asm.js build of sql.js',
+      books === String(expected.books) && sqlBuilds.some((n) => n.startsWith('sql-asm')),
+      `Books tile "${books}", requested ${sqlBuilds.join(', ')}`,
+    )
+    await page.evaluate(() => document.documentElement.classList.add('no-flex-gap'))
+    await noOverflow(page, 'legacy browser (no flex gap)')
+    await shot(page, 'legacy-mobile-light')
+    check(
+      'legacy browser: no console errors',
+      runtime.errors.length === 0,
+      runtime.errors.join(' | '),
     )
     await context.close()
   }

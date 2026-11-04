@@ -16,7 +16,10 @@ export function StatTiles({ stats, label }: { stats: Stat[]; label: string }) {
   return (
     <dl className="stat-tiles" aria-label={label}>
       {stats.map((stat) => (
-        <div className={`stat-tile${stat.info ? ' has-info' : ''}`} key={stat.label}>
+        <div
+          className={`stat-tile${stat.info ? ' has-info' : ''}${stat.detail ? ' has-detail' : ''}`}
+          key={stat.label}
+        >
           <dt>
             {stat.label}
             {/* Inside the dt (a <dl> group may only hold dt/dd); positioned in the tile's corner. */}

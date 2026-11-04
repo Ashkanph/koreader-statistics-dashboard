@@ -14,10 +14,20 @@ const GRANULARITIES: { value: Granularity; label: string }[] = [
 ]
 
 const shortDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' })
-const longDay = new Intl.DateTimeFormat(undefined, { dateStyle: 'full' })
+// Options spelled out rather than dateStyle ('full'/'medium'), which needs Safari 14.1 / Firefox 79.
+const longDay = new Intl.DateTimeFormat(undefined, {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
 const shortMonth = new Intl.DateTimeFormat(undefined, { month: 'short', year: '2-digit' })
 const longMonth = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
-const mediumDay = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' })
+const mediumDay = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+})
 const weekdayLong = new Intl.DateTimeFormat(undefined, { weekday: 'long' })
 const weekdayShort = new Intl.DateTimeFormat(undefined, { weekday: 'short' })
 

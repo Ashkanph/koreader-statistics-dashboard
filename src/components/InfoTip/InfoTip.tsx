@@ -24,12 +24,13 @@ export function InfoTip({ label, children }: Props) {
   useLayoutEffect(() => {
     const panel = panelRef.current
     if (!open || !panel) return
-    panel.style.translate = ''
+    panel.style.transform = ''
     const margin = 8
     const rect = panel.getBoundingClientRect()
     const max = document.documentElement.clientWidth - margin
     const shift = rect.left < margin ? margin - rect.left : rect.right > max ? max - rect.right : 0
-    if (shift) panel.style.translate = `${Math.round(shift)}px 0`
+    // transform, not the translate property (Chrome 104 / Safari 14.1).
+    if (shift) panel.style.transform = `translateX(${Math.round(shift)}px)`
   }, [open])
 
   useEffect(() => {

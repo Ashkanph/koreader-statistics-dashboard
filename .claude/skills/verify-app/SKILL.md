@@ -32,7 +32,8 @@ without rebuilding (e.g. after editing only `verify.mjs` or `fixtures.mjs`), run
    overflow, no console errors, and **no requests to other origins** (the app promises the
    data never leaves the device). It also checks the theme switch and that it persists, sorting
    (`aria-sort`), chart keyboard announcements, search, and the unknown-book route.
-4. Writes `.verify/screenshots/*.png` and `.verify/report.json`, and exits 1 if any check fails.
+4. Checks support for browsers from 2020 (see "Browser support" in CLAUDE.md), because headless Chromium is current and wouldn't notice on its own. `scripts/browser-support.mjs` parses `dist/` JS as ES2020 and flags newer syntax, regexes and built-ins, plus unsupported CSS selectors. A run with `WebAssembly.validate` stubbed to `false` must load through the asm.js build of sql.js, with the `.no-flex-gap` margin fallback on (`legacy-mobile-light.png`). If an API match is a false positive, document why in `ALLOWED_APIS`.
+5. Writes `.verify/screenshots/*.png` and `.verify/report.json`, and exits 1 if any check fails.
 
 ## How to use the results
 

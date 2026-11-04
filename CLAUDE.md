@@ -18,6 +18,20 @@ A client-only web dashboard for KOReader's reading statistics. The user drops or
 - **Icons (`src/assets/stat-icons.svg`, `src/components/Icon.tsx`)**: one SVG sprite of 24×24 outline `<symbol>`s with `stroke="currentColor"`, used via `<use href>`, so the whole set costs a single cached request. It's imported with `?url&no-inline` because Vite would otherwise inline the small file as a `data:` URL, which `<use>` can't reference. When you add a symbol, add its id to the `IconName` union too. Stroke styling must be set as attributes on each `<symbol>`, not in a `<style>` block, which isn't applied reliably through an external `<use>`. `public/icons.svg` is an unused leftover from the Vite template. The app logo is `public/favicon.svg`; `AppLogo.tsx` reuses it in the header and on the home page. `public/apple-touch-icon.png` (180×180) is a raster copy of it with square corners, because iOS rounds the corners itself. Re-render it whenever the logo changes.
 - **Theming (`src/index.css`, `src/lib/theme.ts`)**: CSS custom properties. Dark values are declared both under `prefers-color-scheme: dark` (guarded by `:not([data-theme='light'])`) and under `[data-theme='dark']`, so keep the two blocks in sync. The preference (system/light/dark) is stored in `localStorage` under `theme`, and an inline script in `index.html` applies it before first paint.
 
+## Browser support
+
+The app supports browsers released from 2020 on: Chrome/Edge 80, Firefox 72, Safari 13.1 (iOS 13.4). The targets are set in `vite.config.ts` (`build.target` and `cssTarget`).
+
+- **The build rewrites these automatically:** newer JS syntax (`?.`, `??=`, class fields, …), CSS nesting, logical shorthands (`padding-inline` → longhands) and `inset`.
+- **These can't be rewritten, so don't use them:** `:has()`, `:where()`/`:is()`, `aspect-ratio`, the CSS `translate` property, `Blob.arrayBuffer()` (use `new Response(blob).arrayBuffer()`), `Intl` `dateStyle` (spell the options out), `.at()`, `structuredClone`, `Object.hasOwn`, `replaceAll`.
+- **These need fallbacks:**
+  - `min()`/`clamp()` (Firefox 75): put a plain declaration before each, or use an `@supports not` block where Lightning CSS merges the fallback away.
+  - `:focus-visible`: anything that relies on it for a focus ring also needs a `:focus` rule, plus a `:focus:not(:focus-visible)` rule that undoes it for mouse clicks.
+  - Flex `gap` (Chrome 84, Safari 14.1): an inline script in `index.html` adds `.no-flex-gap`, and the "Older browsers" block at the end of `index.css` gives margins instead. A new flex container with `gap` needs an entry there.
+- **The app is left-to-right only**, so use `left`/`right` rather than `inset-inline-*`. Lightning CSS turns those into hundreds of `:lang()` selectors.
+- **sql.js** (`db.ts`): the WebAssembly build needs `BigInt64Array` (Safari 15) and newer WebAssembly instructions. `loadSqlJs()` checks for both and otherwise loads the asm.js build (`sql.js/dist/sql-asm.js`, 1.3 MB, slower). The build warns that it externalizes `node:fs`/`node:crypto` for that file. Those are only used under Node.js and are harmless.
+- `npm run verify` checks `dist/` for unsupported syntax, APIs and selectors (`scripts/browser-support.mjs` in the verify skill). It also runs the app with the WebAssembly build rejected and `.no-flex-gap` on.
+
 ## Commands
 
 - `npm run dev`: Vite dev server with HMR

@@ -4,6 +4,7 @@
 
 /* Scrolls both ways: dates sideways, books down. The axis and the titles stay pinned. */
 .timeline-scroll {
+  max-height: 500px;
   max-height: min(500px, 70vh);
   overflow: auto;
   overscroll-behavior-x: contain;

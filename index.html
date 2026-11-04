@@ -17,6 +17,16 @@
         var theme = localStorage.getItem('theme')
         if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
       } catch (e) {}
+
+      // Flex gap arrived in Chrome 84 and Safari 14.1. Without it, index.css spaces flex items
+      // with margins instead. ES5 on purpose: this script isn't transpiled.
+      var probe = document.createElement('div')
+      probe.style.cssText = 'display:flex;flex-direction:column;row-gap:1px;position:absolute'
+      probe.appendChild(document.createElement('div'))
+      probe.appendChild(document.createElement('div'))
+      document.documentElement.appendChild(probe)
+      if (probe.scrollHeight !== 1) document.documentElement.className += ' no-flex-gap'
+      document.documentElement.removeChild(probe)
     </script>
   </head>
   <body>

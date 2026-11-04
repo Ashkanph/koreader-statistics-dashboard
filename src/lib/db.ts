@@ -1,4 +1,4 @@
-import type { Database, SqlValue } from 'sql.js'
+import type { Database, SqlJsStatic, SqlValue } from 'sql.js'
 import { dayKey } from './dates.ts'
 import type { Book, Library, ReadingEvent } from './types.ts'
 
@@ -7,13 +7,44 @@ export class DatabaseError extends Error {}
 
 const SQLITE_HEADER = 'SQLite format 3\u0000'
 
+/**
+ * The WebAssembly build of sql.js, or its plain JavaScript (asm.js) build in browsers that can't
+ * run it: the WebAssembly build needs BigInt64Array (Safari 15) and newer WebAssembly
+ * instructions. The JavaScript build is larger and slower but works in any browser from 2020.
+ * Both are loaded lazily so neither is part of the initial bundle.
+ */
+async function loadSqlJs(): Promise<SqlJsStatic> {
+  if (typeof BigInt64Array !== 'undefined' && typeof WebAssembly === 'object') {
+    try {
+      const [{ default: initSqlJs }, { default: wasmUrl }] = await Promise.all([
+        import('sql.js'),
+        import('sql.js/dist/sql-wasm-browser.wasm?url'),
+      ])
+      const response = await fetch(wasmUrl)
+      if (response.ok) {
+        const wasmBinary = await response.arrayBuffer()
+        // validate() is false when the binary uses instructions this browser doesn't know.
+        if (WebAssembly.validate(wasmBinary)) return await initSqlJs({ wasmBinary })
+      }
+    } catch (error) {
+      console.warn('sql.js WebAssembly build unavailable, using the JavaScript build', error)
+    }
+  }
+  const { default: initSqlJsAsm } = await import('sql.js/dist/sql-asm.js')
+  return initSqlJsAsm()
+}
+
+let sqlJs: Promise<SqlJsStatic> | null = null
+
 async function openDatabase(bytes: Uint8Array): Promise<Database> {
-  // Loaded lazily so the ~1 MB WebAssembly module isn't part of the initial bundle.
-  const [{ default: initSqlJs }, { default: wasmUrl }] = await Promise.all([
-    import('sql.js'),
-    import('sql.js/dist/sql-wasm-browser.wasm?url'),
-  ])
-  const SQL = await initSqlJs({ locateFile: () => wasmUrl })
+  sqlJs ??= loadSqlJs()
+  let SQL: SqlJsStatic
+  try {
+    SQL = await sqlJs
+  } catch (error) {
+    sqlJs = null // let a later attempt try again, e.g. after a network error
+    throw error
+  }
   return new SQL.Database(bytes)
 }
 
@@ -35,7 +66,8 @@ function num(value: SqlValue): number | null {
 }
 
 export async function loadLibrary(file: File): Promise<Library> {
-  const bytes = new Uint8Array(await file.arrayBuffer())
+  // Response rather than file.arrayBuffer(), which needs Safari 14.
+  const bytes = new Uint8Array(await new Response(file).arrayBuffer())
 
   const header = new TextDecoder('ascii').decode(bytes.subarray(0, 16))
   if (header !== SQLITE_HEADER) {

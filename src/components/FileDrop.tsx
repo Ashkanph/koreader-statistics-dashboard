@@ -37,6 +37,7 @@ export function FileDrop({ onFile, onExample, loading, error }: Props) {
         </a>
         's statistics database, right in your browser.
       </p>
+      <p>No server, No backend, No tracking!</p>
 
       <div className="example-card">
         <div className="example-card-text">

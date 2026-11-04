@@ -1,6 +1,11 @@
 const integer = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 })
 const percent = new Intl.NumberFormat(undefined, { style: 'percent', maximumFractionDigits: 0 })
-const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' })
+// Spelled out rather than dateStyle: 'medium', which needs Safari 14.1 / Firefox 79.
+const dateFormat = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+})
 
 export function formatNumber(n: number): string {
   return integer.format(n)
