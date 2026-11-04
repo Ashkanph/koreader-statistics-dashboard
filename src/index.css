@@ -18,6 +18,15 @@
   --accent-text: #ffffff;
   --series: #2a78d6;
   --series-active: #1c5cab;
+  /* Categorical palette (dataviz reference order); used by the reading periods timeline. */
+  --cat-1: #2a78d6;
+  --cat-2: #eb6834;
+  --cat-3: #1baf7a;
+  --cat-4: #eda100;
+  --cat-5: #e87ba4;
+  --cat-6: #008300;
+  --cat-7: #6250d6;
+  --cat-8: #e34948;
   --track: #cde2fb;
   --icon: #b4b2aa;
   --context-line: #d3d1ca;
@@ -54,6 +63,14 @@
     --accent-text: #0b0b0b;
     --series: #3987e5;
     --series-active: #86b6ef;
+    --cat-1: #3987e5;
+    --cat-2: #d95926;
+    --cat-3: #199e70;
+    --cat-4: #c98500;
+    --cat-5: #d55181;
+    --cat-6: #008300;
+    --cat-7: #9085e9;
+    --cat-8: #e66767;
     --track: #184f95;
     --icon: #5c5b56;
     --context-line: #3d3d3a;
@@ -82,6 +99,14 @@
   --accent-text: #0b0b0b;
   --series: #3987e5;
   --series-active: #86b6ef;
+  --cat-1: #3987e5;
+  --cat-2: #d95926;
+  --cat-3: #199e70;
+  --cat-4: #c98500;
+  --cat-5: #d55181;
+  --cat-6: #008300;
+  --cat-7: #9085e9;
+  --cat-8: #e66767;
   --track: #184f95;
   --icon: #5c5b56;
   --context-line: #3d3d3a;

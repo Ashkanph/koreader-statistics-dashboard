@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
 import type { Granularity } from '../lib/dates.ts'
 import { autoGranularity, byHourOfDay, byWeekday, timeSeries } from '../lib/stats.ts'
-import type { ProgressCurve } from '../lib/stats.ts'
+import type { BookSpan, ProgressCurve } from '../lib/stats.ts'
 import type { ReadingEvent } from '../lib/types.ts'
 import { BarChart, type BarDatum } from './BarChart.tsx'
 import { ProgressChart } from './ProgressChart/ProgressChart.tsx'
+import { TimelineChart } from './TimelineChart/TimelineChart.tsx'
 
 const GRANULARITIES: { value: Granularity; label: string }[] = [
   { value: 'day', label: 'Daily' },
@@ -32,9 +33,11 @@ interface Props {
   idPrefix: string
   /** Progress curves of finished books; when given, the reading pace charts are shown. */
   curves?: ProgressCurve[]
+  /** Reading period of each book; when given, the reading periods timeline is shown. */
+  spans?: BookSpan[]
 }
 
-export function ReadingCharts({ events, idPrefix, curves }: Props) {
+export function ReadingCharts({ events, idPrefix, curves, spans }: Props) {
   const [granularity, setGranularity] = useState<Granularity>(() => autoGranularity(events))
 
   const series: BarDatum[] = useMemo(
@@ -159,6 +162,15 @@ export function ReadingCharts({ events, idPrefix, curves }: Props) {
               />
             </div>
           </>
+        )}
+        {spans && (
+          <div className="chart-wide">
+            <TimelineChart
+              title="Reading periods"
+              description="When you started and last read each book. The light bar is the whole period; solid marks are the days you read it."
+              spans={spans}
+            />
+          </div>
         )}
       </div>
     </section>

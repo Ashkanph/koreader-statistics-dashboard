@@ -189,3 +189,48 @@ export function progressCurves(books: Book[], firstReads: Map<number, number[]>)
   }
   return curves.sort((a, b) => a.daysToFinish - b.daysToFinish || a.title.localeCompare(b.title))
 }
+
+export interface BookSpan {
+  bookId: number
+  title: string
+  /** Local midnight of the first and last day with reading activity. */
+  start: Date
+  end: Date
+  /** Calendar days from the first to the last reading day, both included. */
+  days: number
+  /** Days with reading activity, as offsets from `start` (0 = the first day), ascending. */
+  readingDays: number[]
+  seconds: number
+}
+
+/** First and last reading day of each book, sorted by when reading started. */
+export function bookSpans(books: Book[], events: ReadingEvent[]): BookSpan[] {
+  const dayKeys = new Map<number, Set<string>>()
+  const seconds = new Map<number, number>()
+  for (const e of events) {
+    let keys = dayKeys.get(e.bookId)
+    if (!keys) dayKeys.set(e.bookId, (keys = new Set()))
+    keys.add(dayKey(e.start))
+    seconds.set(e.bookId, (seconds.get(e.bookId) ?? 0) + e.duration)
+  }
+  const spans: BookSpan[] = []
+  for (const book of books) {
+    const keys = dayKeys.get(book.id)
+    if (!keys?.size) continue
+    const days = [...keys].sort().map(parseDayKey)
+    const start = days[0]
+    const end = days[days.length - 1]
+    spans.push({
+      bookId: book.id,
+      title: book.title,
+      start,
+      end,
+      days: daysBetween(start, end) + 1,
+      readingDays: days.map((d) => daysBetween(start, d)),
+      seconds: seconds.get(book.id) ?? 0,
+    })
+  }
+  return spans.sort(
+    (a, b) => a.start.getTime() - b.start.getTime() || a.title.localeCompare(b.title),
+  )
+}

@@ -249,6 +249,38 @@ try {
 
     await page.getByRole('searchbox', { name: 'Search books' }).fill('')
 
+    // Reading periods timeline: one row per read book, scrolls inside its own box, opens at the
+    // most recent end, and focusing a title shows its tooltip inside the chart.
+    const timeline = page.locator('.timeline-chart')
+    const tlRows = await timeline.locator('.timeline-labels a').count()
+    check(
+      'timeline has a row per read book',
+      tlRows === expected.books,
+      `got ${tlRows}, expected ${expected.books}`,
+    )
+    const tlScroll = await timeline
+      .locator('.timeline-scroll')
+      .evaluate((el) => ({ left: el.scrollLeft, max: el.scrollWidth - el.clientWidth }))
+    check(
+      'timeline opens scrolled to the latest date',
+      tlScroll.max <= 0 || Math.abs(tlScroll.left - tlScroll.max) <= 1,
+      JSON.stringify(tlScroll),
+    )
+    await timeline.locator('.timeline-labels a').first().focus()
+    const tlTip = await timeline.locator('.timeline-tooltip').boundingBox()
+    const tlBox = await timeline.locator('.timeline-frame').boundingBox()
+    check(
+      'timeline tooltip on focus stays inside the chart',
+      Boolean(
+        tlTip &&
+        tlBox &&
+        tlTip.x >= tlBox.x - 1 &&
+        tlTip.x + tlTip.width <= tlBox.x + tlBox.width + 1,
+      ),
+      JSON.stringify({ tlTip, tlBox }),
+    )
+    await page.locator('body').focus()
+
     // Reading pace charts: one line and one legend entry per finished book, linked highlighting.
     const pace = page.locator('.progress-chart')
     check('one reading pace chart', (await pace.count()) === 1, `got ${await pace.count()}`)

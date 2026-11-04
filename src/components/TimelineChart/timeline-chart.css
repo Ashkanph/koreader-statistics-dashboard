@@ -1,0 +1,118 @@
+.timeline-frame {
+  position: relative;
+}
+
+/* Scrolls both ways: dates sideways, books down. The axis and the titles stay pinned. */
+.timeline-scroll {
+  max-height: min(500px, 70vh);
+  overflow: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+}
+
+.timeline-grid {
+  display: grid;
+  width: max-content;
+}
+
+.timeline-corner,
+.timeline-axis,
+.timeline-labels {
+  background: var(--surface);
+}
+
+.timeline-corner {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding-inline: 0.5rem;
+  border-right: 1px solid var(--axis);
+  border-bottom: 1px solid var(--axis);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.timeline-axis {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: block;
+}
+
+.timeline-labels {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  border-right: 1px solid var(--axis);
+  list-style: none;
+}
+
+.timeline-labels a {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 100%;
+  padding-inline: 0.5rem;
+  color: var(--text);
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.timeline-labels a:hover,
+.timeline-labels a.is-active {
+  background: var(--hover);
+}
+
+.timeline-labels a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.timeline-key {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 2px;
+}
+
+.timeline-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timeline-plot {
+  display: block;
+}
+
+/* The whole period, from first to last reading day; reading days are drawn solid on top. */
+.timeline-span {
+  fill-opacity: 0.25;
+}
+
+.timeline-row-hover {
+  fill: var(--hover);
+}
+
+.timeline-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+@media (forced-colors: active) {
+  .timeline-span,
+  .timeline-day {
+    fill: CanvasText;
+  }
+}
+
+/* Positioned by its top-left corner (see TimelineChart), so it never leaves the chart. */
+.chart-tooltip.timeline-tooltip {
+  transform: none;
+}
