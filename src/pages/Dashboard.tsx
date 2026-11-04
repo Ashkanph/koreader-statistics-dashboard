@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { BooksTable } from '../components/BooksTable.tsx'
 import { ReadingCharts } from '../components/ReadingCharts.tsx'
-import { StatTiles, type Stat } from '../components/StatTiles.tsx'
+import { StatTiles, type Stat } from '../components/StatTiles/StatTiles.tsx'
 import { useFocusOnMount } from '../lib/focus.ts'
 import { formatDate, formatDuration, formatNumber, formatPercent } from '../lib/format.ts'
+import { HIGHLIGHTS_INFO, NOTES_INFO, PAGES_INFO, READ_BOOKS_INFO } from '../lib/statInfo.ts'
 import { bookSpans, progressCurves, summarize } from '../lib/stats.ts'
 import type { Library } from '../lib/types.ts'
 
@@ -24,6 +25,7 @@ export function Dashboard({ library }: { library: Library }) {
       icon: 'book-check',
       value: formatNumber(summary.finishedBooks),
       detail: `${formatPercent(summary.books ? summary.finishedBooks / summary.books : 0)} of books`,
+      info: READ_BOOKS_INFO,
     },
     {
       label: 'Total reading time',
@@ -31,7 +33,12 @@ export function Dashboard({ library }: { library: Library }) {
       value: formatDuration(summary.totalTime),
       detail: summary.firstRead ? `since ${formatDate(summary.firstRead)}` : undefined,
     },
-    { label: 'Pages read', icon: 'pages', value: formatNumber(summary.readPages) },
+    {
+      label: 'Pages read',
+      icon: 'pages',
+      value: formatNumber(summary.readPages),
+      info: PAGES_INFO,
+    },
     {
       label: 'Reading days',
       icon: 'calendar',
@@ -56,8 +63,13 @@ export function Dashboard({ library }: { library: Library }) {
     },
     { label: 'Longest streak', icon: 'flame', value: days(summary.longestStreak) },
     { label: 'Current streak', icon: 'bolt', value: days(summary.currentStreak) },
-    { label: 'Highlights', icon: 'highlighter', value: formatNumber(summary.highlights) },
-    { label: 'Notes', icon: 'note', value: formatNumber(summary.notes) },
+    {
+      label: 'Highlights',
+      icon: 'highlighter',
+      value: formatNumber(summary.highlights),
+      info: HIGHLIGHTS_INFO,
+    },
+    { label: 'Notes', icon: 'note', value: formatNumber(summary.notes), info: NOTES_INFO },
   ]
 
   return (
@@ -76,11 +88,6 @@ export function Dashboard({ library }: { library: Library }) {
           Overview
         </h2>
         <StatTiles stats={stats} label="Reading overview" />
-        <p className="footnote">
-          In this app, a book counts as fully read when 95% of pages have reading time recorded.
-          KOReader keeps its own “finished” status in each book's metadata file, which isn't part of
-          this database.
-        </p>
       </section>
 
       <ReadingCharts events={library.events} idPrefix="all" curves={curves} spans={spans} />

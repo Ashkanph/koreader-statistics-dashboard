@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import { ProgressBar } from '../components/ProgressBar.tsx'
 import { ReadingCharts } from '../components/ReadingCharts.tsx'
-import { StatTiles, type Stat } from '../components/StatTiles.tsx'
+import { StatTiles, type Stat } from '../components/StatTiles/StatTiles.tsx'
 import { useFocusOnMount } from '../lib/focus.ts'
 import { formatDate, formatDuration, formatNumber, formatPercent } from '../lib/format.ts'
 import { dashboardHref } from '../lib/router.ts'
+import { HIGHLIGHTS_INFO, NOTES_INFO, PAGES_INFO } from '../lib/statInfo.ts'
 import { summarize } from '../lib/stats.ts'
 import type { Book, Library } from '../lib/types.ts'
 
@@ -61,6 +62,7 @@ function BookDetails({ library, book }: { library: Library; book: Book }) {
       icon: 'pages',
       value: formatNumber(book.readPages),
       detail: `of ${formatNumber(book.pages)} pages`,
+      info: PAGES_INFO,
     },
     { label: 'Total reading time', icon: 'clock', value: formatDuration(book.totalTime) },
     {
@@ -97,8 +99,14 @@ function BookDetails({ library, book }: { library: Library; book: Book }) {
       label: 'Highlights',
       icon: 'highlighter',
       value: book.highlights === null ? '—' : formatNumber(book.highlights),
+      info: HIGHLIGHTS_INFO,
     },
-    { label: 'Notes', icon: 'note', value: book.notes === null ? '—' : formatNumber(book.notes) },
+    {
+      label: 'Notes',
+      icon: 'note',
+      value: book.notes === null ? '—' : formatNumber(book.notes),
+      info: NOTES_INFO,
+    },
   ]
 
   const details: [string, string | null][] = [

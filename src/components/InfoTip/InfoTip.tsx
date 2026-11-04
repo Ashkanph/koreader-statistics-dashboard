@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from '../Icon.tsx'
 import './info-tip.css'
 
@@ -16,8 +16,21 @@ export function InfoTip({ label, children }: Props) {
   const [hovered, setHovered] = useState(false)
   const [pinned, setPinned] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
   const panelId = useId()
   const open = hovered || pinned
+
+  // Keep the panel on screen: shift it sideways if its anchored position would overflow.
+  useLayoutEffect(() => {
+    const panel = panelRef.current
+    if (!open || !panel) return
+    panel.style.translate = ''
+    const margin = 8
+    const rect = panel.getBoundingClientRect()
+    const max = document.documentElement.clientWidth - margin
+    const shift = rect.left < margin ? margin - rect.left : rect.right > max ? max - rect.right : 0
+    if (shift) panel.style.translate = `${Math.round(shift)}px 0`
+  }, [open])
 
   useEffect(() => {
     if (!pinned) return
@@ -60,7 +73,7 @@ export function InfoTip({ label, children }: Props) {
       >
         <Icon name="help" className="info-tip-icon" />
       </button>
-      <div id={panelId} className="info-tip-panel" role="note" hidden={!open}>
+      <div ref={panelRef} id={panelId} className="info-tip-panel" role="note" hidden={!open}>
         {children}
       </div>
     </div>
