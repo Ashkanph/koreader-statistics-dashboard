@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- App icon: an open book above a progress bar. Also used in the header and on the home page. -->
+  <rect width="32" height="32" rx="7" fill="#ee6a3c"/>
+  <path d="M5 7.5c3.8-1.1 7.6-.7 11 1.4 3.4-2.1 7.2-2.5 11-1.4v12.5c-3.8-1.1-7.6-.7-11 1.4-3.4-2.1-7.2-2.5-11-1.4z" fill="#fff"/>
+  <path d="M16 9.5v11.5" stroke="#ffd0bc" stroke-width="1.25"/>
+  <rect x="5" y="24" width="22" height="3.5" rx="1.75" fill="#fff" fill-opacity=".4"/>
+  <rect x="5" y="24" width="15" height="3.5" rx="1.75" fill="#fff"/>
+</svg>
