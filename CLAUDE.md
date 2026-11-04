@@ -39,6 +39,7 @@ The app supports browsers released from 2020 on: Chrome/Edge 80, Firefox 72, Saf
 - `npm run lint` / `npm run lint:fix`: ESLint (flat config in `eslint.config.js`)
 - `npm run format` / `npm run format:check`: Prettier (`.prettierrc.json`: no semicolons, single quotes, trailing commas, width 100)
 - `npm run preview`: serves the built `dist/`
+- `npm run deploy`: builds (via `predeploy`), then publishes `dist/` with `gh-pages` to GitHub Pages at `https://ashkanph.github.io/koreader-statistics-dashboard/`. `base: './'` in `vite.config.ts` keeps every asset URL relative, because the site is served from a subfolder. So reference public files through `import.meta.env.BASE_URL`, not with a leading `/`.
 
 - `npm run verify` (or `npm run verify -- --quick`): builds, then checks the app end to end in headless Chromium and writes screenshots to `.verify/` (see the `verify-app` skill)
 
