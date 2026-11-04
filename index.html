@@ -6,11 +6,55 @@
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+    <title>KOReader Statistics Dashboard: charts for your reading stats</title>
     <meta
       name="description"
-      content="Explore your KOReader reading statistics in the browser. Your data never leaves your device."
+      content="Free, private dashboard for KOReader's statistics.sqlite3. See reading time, pages, streaks, reading pace and per-book charts, right in your browser. Nothing is uploaded."
     />
-    <title>KOReader Statistics Dashboard</title>
+    <!-- Absolute URLs: link previews and search engines don't resolve relative ones here. -->
+    <link rel="canonical" href="https://ashkanph.github.io/koreader-statistics-dashboard/" />
+
+    <!-- Link previews (Open Graph: Facebook, Mastodon, Slack, Discord, …; Twitter/X). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KOReader Statistics Dashboard" />
+    <meta property="og:title" content="KOReader Statistics Dashboard" />
+    <meta
+      property="og:description"
+      content="See your KOReader reading time, pages, streaks and reading pace as charts. Runs in your browser; your statistics never leave your device."
+    />
+    <meta property="og:url" content="https://ashkanph.github.io/koreader-statistics-dashboard/" />
+    <meta
+      property="og:image"
+      content="https://ashkanph.github.io/koreader-statistics-dashboard/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The dashboard with example data: stat tiles for books, reading time and streaks, and a weekly reading time chart."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Structured data, so search engines can show it as a free web app. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "KOReader Statistics Dashboard",
+        "url": "https://ashkanph.github.io/koreader-statistics-dashboard/",
+        "description": "A dashboard for KOReader's reading statistics database (statistics.sqlite3): reading time, pages, streaks, reading pace and per-book charts. The file is read in the browser and never uploaded.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Works in browsers from 2020 on.",
+        "image": "https://ashkanph.github.io/koreader-statistics-dashboard/og-image.png",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Ashkanph", "url": "https://github.com/Ashkanph" },
+        "codeRepository": "https://github.com/Ashkanph/koreader-statistics-dashboard"
+      }
+    </script>
     <script>
       // Apply the saved theme before first paint to avoid a flash (see src/lib/theme.ts).
       try {
@@ -28,10 +72,22 @@
       if (probe.scrollHeight !== 1) document.documentElement.className += ' no-flex-gap'
       document.documentElement.removeChild(probe)
     </script>
-    <script type="module" crossorigin src="./assets/index-W4wBix_K.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BrpQYoHX.css">
+    <script type="module" crossorigin src="./assets/index-CX4z5bC_.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BGoqaZwl.css">
   </head>
   <body>
     <div id="root"></div>
+    <!-- For visitors and crawlers without JavaScript; the app itself needs it. -->
+    <noscript>
+      <h1>KOReader Statistics Dashboard</h1>
+      <p>
+        A free dashboard for the reading statistics that
+        <a href="https://github.com/koreader/koreader/">KOReader</a> records on your e-reader. Open
+        your <code>statistics.sqlite3</code> file to see your reading time, pages read, reading
+        streaks, reading pace and charts for each book. The file is read in your browser and never
+        uploaded.
+      </p>
+      <p>This app needs JavaScript. Please enable it to continue.</p>
+    </noscript>
   </body>
 </html>
