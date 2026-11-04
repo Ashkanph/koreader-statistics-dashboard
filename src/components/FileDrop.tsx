@@ -3,11 +3,13 @@ import { AppLogo } from './AppLogo.tsx'
 
 interface Props {
   onFile: (file: File) => void
+  /** Loads the bundled example database. */
+  onExample: () => void
   loading: boolean
   error: string | null
 }
 
-export function FileDrop({ onFile, loading, error }: Props) {
+export function FileDrop({ onFile, onExample, loading, error }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
   const hintId = useId()
@@ -34,6 +36,20 @@ export function FileDrop({ onFile, loading, error }: Props) {
           KOReader<span className="visually-hidden"> (opens in a new tab)</span>
         </a>
         's statistics database, right in your browser.
+      </p>
+
+      <div className="example-card">
+        <div className="example-card-text">
+          <h2 className="example-card-title">New to KOReader?</h2>
+          <p>Explore what the dashboard shows with a sample reading history.</p>
+        </div>
+        <button type="button" className="button" onClick={onExample} disabled={loading}>
+          Try with example data
+        </button>
+      </div>
+
+      <p className="file-drop-divider">
+        <span>or use your own file</span>
       </p>
 
       <div
@@ -90,7 +106,7 @@ export function FileDrop({ onFile, loading, error }: Props) {
       </div>
       {error && (
         <div id={errorId} className="alert" role="alert">
-          <strong>The file couldn't be read.</strong> {error}
+          <strong>The statistics couldn't be loaded.</strong> {error}
         </div>
       )}
     </section>

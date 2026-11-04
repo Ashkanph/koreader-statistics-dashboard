@@ -118,6 +118,32 @@ try {
     await context.close()
   }
 
+  // 1b. The bundled example database loads from the upload panel, from this origin only.
+  {
+    const { page, context, problems } = await open(VIEWPORTS.mobile, 'light')
+    const button = page.getByRole('button', { name: 'Try with example data' })
+    check('example data button is shown on the upload panel', await button.isVisible())
+    await shot(page, 'home-mobile-light')
+    await button.click()
+    await page.waitForSelector('.stat-tiles, [role=alert]', { timeout: 15000 })
+    const heading = await page.locator('h1').textContent()
+    const fileName = await page
+      .locator('.file-name')
+      .textContent()
+      .catch(() => null)
+    check(
+      'example data opens the dashboard',
+      heading === 'Your reading' && fileName === 'example-statistics.sqlite3',
+      `h1 "${heading}", file "${fileName}"`,
+    )
+    check(
+      'example data: no console errors or off-origin requests',
+      problems.errors.length === 0 && problems.foreignRequests.length === 0,
+      [...problems.errors, ...problems.foreignRequests].join(' | '),
+    )
+    await context.close()
+  }
+
   // 2. The fixture database in every viewport and theme.
   const viewports = args.quick ? ['desktop'] : Object.keys(VIEWPORTS)
   for (const name of viewports) {

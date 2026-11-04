@@ -9,6 +9,8 @@ import type { Library } from './lib/types.ts'
 import { BookPage } from './pages/BookPage.tsx'
 import { Dashboard } from './pages/Dashboard.tsx'
 
+const EXAMPLE_FILE = 'example-statistics.sqlite3'
+
 function App() {
   const [theme, setTheme] = useTheme()
   const route = useRoute()
@@ -16,11 +18,11 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const openFile = async (file: File) => {
+  const load = async (getFile: () => Promise<File>) => {
     setLoading(true)
     setError(null)
     try {
-      setLibrary(await loadLibrary(file))
+      setLibrary(await loadLibrary(await getFile()))
     } catch (e) {
       setError(
         e instanceof DatabaseError ? e.message : 'Something went wrong while reading the file.',
@@ -30,6 +32,27 @@ function App() {
       setLoading(false)
     }
   }
+
+  const openFile = (file: File) => load(async () => file)
+
+  // A sample database shipped in public/, for visitors without a KOReader device at hand.
+  const openExample = () =>
+    load(async () => {
+      let response: Response
+      try {
+        response = await fetch(`${import.meta.env.BASE_URL}${EXAMPLE_FILE}`)
+      } catch {
+        throw new DatabaseError(
+          "The example data couldn't be downloaded. Check your connection and try again.",
+        )
+      }
+      if (!response.ok) {
+        throw new DatabaseError(
+          `The example data couldn't be downloaded (HTTP ${response.status}).`,
+        )
+      }
+      return new File([await response.blob()], EXAMPLE_FILE)
+    })
 
   const closeFile = () => {
     setLibrary(null)
@@ -68,7 +91,7 @@ function App() {
 
       <main id="main" className="app-main">
         {!library ? (
-          <FileDrop onFile={openFile} loading={loading} error={error} />
+          <FileDrop onFile={openFile} onExample={openExample} loading={loading} error={error} />
         ) : route.name === 'book' ? (
           <BookPage library={library} bookId={route.bookId} />
         ) : (
