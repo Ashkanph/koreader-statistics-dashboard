@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AppLogo } from './components/AppLogo.tsx'
 import { FileDrop } from './components/FileDrop.tsx'
+import { Icon } from './components/Icon.tsx'
 import { ThemeSwitcher } from './components/ThemeSwitcher.tsx'
 import { DatabaseError, loadLibrary } from './lib/db.ts'
 import { dashboardHref, useRoute } from './lib/router.ts'
@@ -10,6 +11,7 @@ import { BookPage } from './pages/BookPage.tsx'
 import { Dashboard } from './pages/Dashboard.tsx'
 
 const EXAMPLE_FILE = 'example-statistics.sqlite3'
+const REPOSITORY_URL = 'https://github.com/Ashkanph/koreader-statistics-dashboard'
 
 function App() {
   const [theme, setTheme] = useTheme()
@@ -85,6 +87,17 @@ function App() {
               </button>
             )}
             <ThemeSwitcher value={theme} onChange={setTheme} />
+            {/* A new tab: leaving the page would drop the loaded file, which is only in memory. */}
+            <a
+              href={REPOSITORY_URL}
+              className="button button-icon"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Source code on GitHub (opens in a new tab)"
+              title="Source code on GitHub"
+            >
+              <Icon name="github" />
+            </a>
           </div>
         </div>
       </header>

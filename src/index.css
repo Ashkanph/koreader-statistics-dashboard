@@ -324,6 +324,18 @@ h1:focus {
   background: var(--hover);
 }
 
+/* Square, for an icon on its own. The class can be on a link, too. */
+.button-icon {
+  width: 2.5rem;
+  padding: 0;
+  text-decoration: none;
+}
+
+.button-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .button:disabled {
   opacity: 0.6;
   cursor: progress;

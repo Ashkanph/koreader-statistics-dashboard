@@ -297,6 +297,20 @@ try {
       `${spriteRequests.length} downloads`,
     )
 
+    // The repository link opens in a new tab, because leaving the page drops the loaded file.
+    const repoLink = page.locator('.app-header a[href*="github.com"]')
+    check(
+      'header links to the repository in a new tab',
+      (await repoLink.getAttribute('href')) ===
+        'https://github.com/Ashkanph/koreader-statistics-dashboard' &&
+        (await repoLink.getAttribute('target')) === '_blank' &&
+        Boolean(await repoLink.getAttribute('aria-label')),
+    )
+    check(
+      'GitHub icon is drawn',
+      await repoLink.locator('svg').evaluate((svg) => svg.getBoundingClientRect().width > 0),
+    )
+
     await page.getByLabel('Dark').check({ force: true })
     check(
       'theme switch sets data-theme',

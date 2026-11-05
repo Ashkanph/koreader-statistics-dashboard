@@ -21,8 +21,9 @@ export type IconName =
   | 'flag'
   | 'bookmark'
   | 'help'
+  | 'github'
 
-/** Decorative icon: always paired with a visible text label, so hidden from assistive tech. */
+/** Decorative icon: its text label or the parent's aria-label names it, so it's hidden from assistive tech. */
 export function Icon({ name, className = 'icon' }: { name: IconName; className?: string }) {
   return (
     <svg className={className} aria-hidden="true" focusable="false">
