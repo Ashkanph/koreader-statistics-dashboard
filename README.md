@@ -21,8 +21,7 @@ Don't use KOReader, or just curious? Click **Try with example data** on the [sta
 ## Using your own statistics
 
 1. Copy `statistics.sqlite3` from your e-reader. It's in KOReader's `settings` folder, for example:
-   - Kobo: `.adds/koreader/settings/statistics.sqlite3`
-   - Kindle: `koreader/settings/statistics.sqlite3`
+   - PocketBook: `applications/koreader/settings/statistics.sqlite3`
    - Android: `koreader/settings/statistics.sqlite3` in the device's internal storage
 2. Open the [dashboard](https://ashkanph.github.io/koreader-statistics-dashboard/) and drop the file on the page, or click **Choose file**.
 
