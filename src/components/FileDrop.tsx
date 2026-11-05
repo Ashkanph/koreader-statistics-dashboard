@@ -117,7 +117,8 @@ export function FileDrop({ onFile, onExample, loading, error }: Props) {
         <input
           ref={inputRef}
           type="file"
-          accept=".sqlite3,.sqlite,.db,application/vnd.sqlite3,application/x-sqlite3"
+          // No `accept`: mobile pickers filter by MIME type, and Android and iOS don't know one
+          // for .sqlite3, so the file would be grayed out. db.ts checks the SQLite header instead.
           className="visually-hidden"
           tabIndex={-1}
           aria-hidden="true"
